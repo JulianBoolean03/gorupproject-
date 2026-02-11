@@ -74,16 +74,16 @@ class _ValentineHomeState extends State<ValentineHome>
   }
 
   void _pulseOnce() {
-  setState(() {
-    heartScale = 1.1;
-  });
-
-  Future.delayed(Duration(milliseconds: 250), () {
     setState(() {
-      heartScale = 1.0;
+      heartScale = 1.1;
     });
-  });
-}
+
+    Future.delayed(const Duration(milliseconds: 250), () {
+      setState(() {
+        heartScale = 1.0;
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,48 +100,65 @@ class _ValentineHomeState extends State<ValentineHome>
               Color(0xFFE53935),
             ],
           ),
-          const SizedBox(height: 12),
-
-          // ✅ Pulse button
-          ElevatedButton(
-            onPressed: _pulseOnce,
-            child: const Text('Pulse Heart'),
-          ),
-
-          const SizedBox(height: 16),
-          Container(
-            width: 100,
-            height: 100,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/lover_icon.png'),
-                fit: BoxFit.cover,
+        ),
+        child: Column(
+          children: [
+            const SizedBox(height: 12),
+            DropdownButton<String>(
+              value: selectedEmoji,
+              items: emojiOptions
+                  .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                  .toList(),
+              onChanged: (value) {
+                final next = value ?? selectedEmoji;
+                setState(() => selectedEmoji = next);
+                if (next != 'Party Heart') {
+                  _confettiController
+                    ..stop()
+                    ..reset();
+                }
+              },
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: _pulseOnce,
+              child: const Text('Pulse Heart'),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              width: 100,
+              height: 100,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/lover_icon.png'),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 16),
-          Expanded(
-            child: Center(
-              child: GestureDetector(
-                onTap: () {
-                  if (selectedEmoji == 'Party Heart') {
-                    _confettiController
-                      ..reset()
-                      ..repeat();
-                  }
-                },
-                child: AnimatedBuilder(
-                  animation: _confettiController,
-                  builder: (_, __) => AnimatedScale(
-                    scale: heartScale,
-                    duration: const Duration(milliseconds: 250),
-                    curve: Curves.easeInOut,
-                    child: CustomPaint(
-                      size: const Size(300, 300),
-                      painter: HeartEmojiPainter(
-                        type: selectedEmoji,
-                        confettiProgress: _confettiController.value,
-                        confettiPieces: _confettiPieces,
+            const SizedBox(height: 16),
+            Expanded(
+              child: Center(
+                child: GestureDetector(
+                  onTap: () {
+                    if (selectedEmoji == 'Party Heart') {
+                      _confettiController
+                        ..reset()
+                        ..repeat();
+                    }
+                  },
+                  child: AnimatedBuilder(
+                    animation: _confettiController,
+                    builder: (_, __) => AnimatedScale(
+                      scale: heartScale,
+                      duration: const Duration(milliseconds: 250),
+                      curve: Curves.easeInOut,
+                      child: CustomPaint(
+                        size: const Size(300, 300),
+                        painter: HeartEmojiPainter(
+                          type: selectedEmoji,
+                          confettiProgress: _confettiController.value,
+                          confettiPieces: _confettiPieces,
+                        ),
                       ),
                     ),
                   ),
