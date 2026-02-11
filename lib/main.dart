@@ -88,23 +88,17 @@ class _ValentineHomeState extends State<ValentineHome>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Cupid\'s Canvas')),
-      body: Column(
-        children: [
-          const SizedBox(height: 16),
-          DropdownButton<String>(
-            value: selectedEmoji,
-            items: emojiOptions
-                .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                .toList(),
-            onChanged: (value) {
-              final next = value ?? selectedEmoji;
-              setState(() => selectedEmoji = next);
-              if (next != 'Party Heart') {
-                _confettiController
-                  ..stop()
-                  ..reset();
-              }
-            },
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: RadialGradient(
+            center: Alignment(0.0, -0.4),
+            radius: 1.0,
+            colors: [
+              Color(0xFFFFC1D9),
+              Color(0xFFE53935),
+            ],
           ),
           const SizedBox(height: 12),
 
@@ -154,8 +148,8 @@ class _ValentineHomeState extends State<ValentineHome>
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
