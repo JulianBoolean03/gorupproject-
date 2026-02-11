@@ -1,5 +1,5 @@
-import 'dart:math';
 
+import 'dart:math';
 import 'package:flutter/material.dart';
 
 void main() => runApp(const ValentineApp());
@@ -30,6 +30,8 @@ class _ValentineHomeState extends State<ValentineHome>
   String selectedEmoji = 'Sweet Heart';
   late final AnimationController _confettiController;
   late final List<ConfettiPiece> _confettiPieces;
+
+  double heartScale = 1.0;
 
   @override
   void initState() {
@@ -71,6 +73,17 @@ class _ValentineHomeState extends State<ValentineHome>
     });
   }
 
+  void _pulseOnce() {
+  setState(() {
+    heartScale = 1.1;
+  });
+
+  Future.delayed(Duration(milliseconds: 250), () {
+    setState(() {
+      heartScale = 1.0;
+    });
+  });
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,13 +106,21 @@ class _ValentineHomeState extends State<ValentineHome>
               }
             },
           ),
+          const SizedBox(height: 12),
+
+          // ✅ Pulse button
+          ElevatedButton(
+            onPressed: _pulseOnce,
+            child: const Text('Pulse Heart'),
+          ),
+
           const SizedBox(height: 16),
           Container(
-            width: 200,
-            height: 200,
+            width: 100,
+            height: 100,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/love_icon.png'),
+                image: AssetImage('assets/images/lover_icon.png'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -117,12 +138,17 @@ class _ValentineHomeState extends State<ValentineHome>
                 },
                 child: AnimatedBuilder(
                   animation: _confettiController,
-                  builder: (_, __) => CustomPaint(
-                    size: const Size(300, 300),
-                    painter: HeartEmojiPainter(
-                      type: selectedEmoji,
-                      confettiProgress: _confettiController.value,
-                      confettiPieces: _confettiPieces,
+                  builder: (_, __) => AnimatedScale(
+                    scale: heartScale,
+                    duration: const Duration(milliseconds: 250),
+                    curve: Curves.easeInOut,
+                    child: CustomPaint(
+                      size: const Size(300, 300),
+                      painter: HeartEmojiPainter(
+                        type: selectedEmoji,
+                        confettiProgress: _confettiController.value,
+                        confettiPieces: _confettiPieces,
+                      ),
                     ),
                   ),
                 ),
