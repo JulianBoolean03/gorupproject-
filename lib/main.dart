@@ -75,61 +75,75 @@ class _ValentineHomeState extends State<ValentineHome>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Cupid\'s Canvas')),
-      body: Column(
-        children: [
-          const SizedBox(height: 16),
-          DropdownButton<String>(
-            value: selectedEmoji,
-            items: emojiOptions
-                .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                .toList(),
-            onChanged: (value) {
-              final next = value ?? selectedEmoji;
-              setState(() => selectedEmoji = next);
-              if (next != 'Party Heart') {
-                _confettiController
-                  ..stop()
-                  ..reset();
-              }
-            },
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: RadialGradient(
+            center: Alignment(0.0, -0.4),
+            radius: 1.0,
+            colors: [
+              Color(0xFFFFC1D9),
+              Color(0xFFE53935),
+            ],
           ),
-          const SizedBox(height: 16),
-          Container(
-            width: 200,
-            height: 200,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/love_icon.png'),
-                fit: BoxFit.cover,
+        ),
+        child: Column(
+          children: [
+            const SizedBox(height: 16),
+            DropdownButton<String>(
+              value: selectedEmoji,
+              items: emojiOptions
+                  .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                  .toList(),
+              onChanged: (value) {
+                final next = value ?? selectedEmoji;
+                setState(() => selectedEmoji = next);
+                if (next != 'Party Heart') {
+                  _confettiController
+                    ..stop()
+                    ..reset();
+                }
+              },
+            ),
+            const SizedBox(height: 16),
+            Container(
+              width: 200,
+              height: 200,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/love_icon.png'),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 16),
-          Expanded(
-            child: Center(
-              child: GestureDetector(
-                onTap: () {
-                  if (selectedEmoji == 'Party Heart') {
-                    _confettiController
-                      ..reset()
-                      ..repeat();
-                  }
-                },
-                child: AnimatedBuilder(
-                  animation: _confettiController,
-                  builder: (_, __) => CustomPaint(
-                    size: const Size(300, 300),
-                    painter: HeartEmojiPainter(
-                      type: selectedEmoji,
-                      confettiProgress: _confettiController.value,
-                      confettiPieces: _confettiPieces,
+            const SizedBox(height: 16),
+            Expanded(
+              child: Center(
+                child: GestureDetector(
+                  onTap: () {
+                    if (selectedEmoji == 'Party Heart') {
+                      _confettiController
+                        ..reset()
+                        ..repeat();
+                    }
+                  },
+                  child: AnimatedBuilder(
+                    animation: _confettiController,
+                    builder: (_, __) => CustomPaint(
+                      size: const Size(300, 300),
+                      painter: HeartEmojiPainter(
+                        type: selectedEmoji,
+                        confettiProgress: _confettiController.value,
+                        confettiPieces: _confettiPieces,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
